@@ -1,11 +1,15 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback, createRef } from 'react';
 
 import Card from '../components/Card';
 import styles from '../styles/Home.module.css';
 import CircularButton from '../components/CircularButton';
 import { getPhotosOfTheDay } from '../services/PhotoOfTheDay';
 import { AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
+import LikedImages from '../components/LikedImages';
+import CardStack from '../components/CardStack';
+import Draggable from '../components/Draggable';
 
 interface HomeProps {
   images: APODImage[];
@@ -68,56 +72,99 @@ const testData = [
 ];
 
 export default function Home({ images }: HomeProps) {
+  const [cardRef, setTopCardRef] = useState(null);
   const [imageQueue, setImageQueue] = useState<APODImage[]>(testData);
-  const [skippedImages, setSkippedImages] = useState(images);
+  const [likedImages, setLikedImages] = useState<APODImage[]>(testData);
+  const elementsRef = useRef(testData.map(() => createRef()));
 
-  const popImage = (array: APODImage[]) => {
-    array.pop();
-    return array;
+  const vote = (result) => {
+    const newImageQueue = [...imageQueue];
+    const popped = newImageQueue.pop();
+    // if (result === 1) {
+    //   console.log(popped);
+    //   setLikedImages([...likedImages, popped]);
+    // }
+    setImageQueue(newImageQueue);
   };
 
-  const handleVote = (result) => {
-    const newImageQueue = popImage([...imageQueue]);
-    setImageQueue(newImageQueue);
-    console.log(result);
+  const handleOnDragEnd = (event, info) => {
+    const velocity = info.velocity.x;
+    const direction = 0 < velocity ? 1 : velocity < 0 ? -1 : undefined;
+    if (direction && Math.abs(velocity) > 500) {
+      vote(direction);
+    }
   };
 
   return (
-    <div className="h-full w-full flex overflow-x-hidden	">
-      <div>Liked</div>
-      <div className="h-screen w-full bg-neutral-100 flex justify-center items-center">
-        <div className="w-full">
-          <div
-            className={`w-full flex relative justify-center items-center ${styles.imageQueue}`}
-          >
-            <AnimatePresence>
-              {imageQueue.length ? (
-                imageQueue.map((imageData, idx) => (
-                  <Card
-                    key={imageData.title}
-                    drag={idx === imageQueue.length - 1}
-                    title={imageData.title}
-                    date={imageData.date}
-                    url={imageData.url}
-                    onVote={handleVote}
-                  />
-                ))
-              ) : (
-                <div>No more space photos in your area!</div>
-              )}
-            </AnimatePresence>
-          </div>
-          <div className="flex w-full pt-6 justify-center relative">
-            <div className="pr-1.5">
-              <CircularButton onPress={() => {}}>skip</CircularButton>
+    <div className="h-screen w-full flex overflow-hidden">
+      <div className="bg-slate-700 z-10 w-1/3 shadow-xl">
+        <h1 className="text-white text-center">Liked Images</h1>
+        <LikedImages images={likedImages} />
+      </div>
+      <div className="h-full w-full bg-slate-800">
+        <div className="h-full w-full flex justify-center items-center">
+          <div className="w-full">
+            <div
+              className={`w-full flex relative justify-center items-center ${styles.imageQueue}`}
+            >
+              <AnimatePresence>
+                {imageQueue.length ? (
+                  imageQueue.map((imageData, idx) => {
+                    return (
+                      <Draggable
+                        ref={elementsRef.current[idx]}
+                        key={imageData.title}
+                        drag={idx === imageQueue.length - 1}
+                        onDragEnd={handleOnDragEnd}
+                        onVote={vote}
+                      >
+                        <Card
+                          title={imageData.title}
+                          date={imageData.date}
+                          url={imageData.url}
+                        />
+                      </Draggable>
+                    );
+                  })
+                ) : (
+                  <div>Finding more images</div>
+                )}
+              </AnimatePresence>
             </div>
-            <div className="px-1.5">
-              <CircularButton onPress={() => {}}>undo</CircularButton>
-            </div>
-            <div className="pl-1.5">
-              <CircularButton onPress={() => handleVote('RIGHT')}>
-                like
-              </CircularButton>
+            <div className="flex w-full pt-6 justify-center relative">
+              <div className="pr-1.5">
+                <CircularButton
+                  onPress={() => {
+                    elementsRef.current[
+                      imageQueue.length - 1
+                    ].current.swipeLeft();
+                  }}
+                >
+                  <Image src="/skip.svg" alt="like" height={32} width={32} />
+                </CircularButton>
+              </div>
+              <div className="px-1.5">
+                <CircularButton
+                  onPress={() => {
+                    elementsRef.current[
+                      imageQueue.length - 1
+                    ].current.swipeLeft();
+                  }}
+                >
+                  <Image src="/undo.svg" alt="like" height={32} width={32} />
+                </CircularButton>
+              </div>
+              <div className="pl-1.5">
+                <CircularButton
+                  onPress={() => {
+                    elementsRef.current[
+                      imageQueue.length - 1
+                    ].current.swipeRight();
+                  }}
+                >
+                  <Image src="/heart.svg" alt="like" height={32} width={32} />
+                </CircularButton>
+              </div>
             </div>
           </div>
         </div>

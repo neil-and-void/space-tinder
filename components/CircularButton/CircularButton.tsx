@@ -8,7 +8,7 @@ interface CircularButtonProps {
 const CircularButton = ({ onPress, children }: CircularButtonProps) => {
   return (
     <button
-      className="w-16 h-16 bg-white rounded-full shadow-md"
+      className="grid place-items-center w-16 h-16 bg-gray-700 rounded-full shadow-md"
       onClick={() => onPress()}
     >
       {children}
