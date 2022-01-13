@@ -1,15 +1,21 @@
 import React from 'react';
 
 interface CircularButtonProps {
-  onPress: () => void;
+  onClick: () => void;
   children: React.ReactNode;
+  disabled: boolean;
 }
 
-const CircularButton = ({ onPress, children }: CircularButtonProps) => {
+const CircularButton = ({
+  onClick,
+  children,
+  disabled,
+}: CircularButtonProps) => {
   return (
     <button
       className="grid place-items-center w-16 h-16 bg-gray-700 rounded-full shadow-md"
-      onClick={() => onPress()}
+      onClick={() => onClick()}
+      disabled={disabled}
     >
       {children}
     </button>

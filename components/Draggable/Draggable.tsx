@@ -14,6 +14,8 @@ import {
 
 interface DraggableProps {
   children: ReactNode;
+  onVote: (number) => void;
+  onDragEnd: (event, info) => void;
 }
 
 const Draggable = (
@@ -37,11 +39,12 @@ const Draggable = (
         setDirection(0);
       }
     });
+
     return () => unSub();
   });
 
+  // allow parent to call swipe functions to not couple other components
   useImperativeHandle(ref, () => ({
-    setDirection: (swipeDirection) => setDirection(swipeDirection),
     swipeLeft: () => {
       setDirection(-1);
       onVote(-1);
@@ -49,6 +52,10 @@ const Draggable = (
     swipeRight: () => {
       setDirection(1);
       onVote(1);
+    },
+    swipe: (direction) => {
+      setDirection(direction);
+      onVote(direction);
     },
   }));
 

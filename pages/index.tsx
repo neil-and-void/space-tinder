@@ -8,8 +8,9 @@ import { getPhotosOfTheDay } from '../services/PhotoOfTheDay';
 import { AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import LikedImages from '../components/LikedImages';
-import CardStack from '../components/CardStack';
 import Draggable from '../components/Draggable';
+import Modal from '../components/Modal';
+import ImageInfo from '../components/ImageInfo';
 
 interface HomeProps {
   images: APODImage[];
@@ -72,18 +73,31 @@ const testData = [
 ];
 
 export default function Home({ images }: HomeProps) {
-  const [cardRef, setTopCardRef] = useState(null);
   const [imageQueue, setImageQueue] = useState<APODImage[]>(testData);
-  const [likedImages, setLikedImages] = useState<APODImage[]>(testData);
+  const [likedImages, setLikedImages] = useState<APODImage[]>([]);
   const elementsRef = useRef(testData.map(() => createRef()));
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-  const vote = (result) => {
+  useEffect(() => {
+    const getMorePhotosOfTheDay = async () => {
+      if (imageQueue.length === 0) {
+        setLoading(true);
+        const photos = await getPhotosOfTheDay(5);
+        setImageQueue(photos);
+        setLoading(false);
+      }
+    };
+
+    getMorePhotosOfTheDay();
+  }, [imageQueue]);
+
+  const handleVote = (result) => {
     const newImageQueue = [...imageQueue];
     const popped = newImageQueue.pop();
-    // if (result === 1) {
-    //   console.log(popped);
-    //   setLikedImages([...likedImages, popped]);
-    // }
+    if (result === 1) {
+      setLikedImages([...likedImages, popped]);
+    }
     setImageQueue(newImageQueue);
   };
 
@@ -91,17 +105,41 @@ export default function Home({ images }: HomeProps) {
     const velocity = info.velocity.x;
     const direction = 0 < velocity ? 1 : velocity < 0 ? -1 : undefined;
     if (direction && Math.abs(velocity) > 500) {
-      vote(direction);
+      handleVote(direction);
     }
   };
 
+  const swipeTopCard = (direction) => {
+    const topCardRef = elementsRef.current[imageQueue.length - 1];
+    if (direction < 0) {
+      topCardRef.current.swipeLeft();
+    } else if (0 < direction) {
+      topCardRef.current.swipeRight();
+    }
+  };
+
+  const viewDescription = (image: APODImage) => {
+    setShowModal(true);
+  };
+
+  const unlikeImage = () => {};
+
   return (
     <div className="h-screen w-full flex overflow-hidden">
-      <div className="bg-slate-700 z-10 w-1/3 shadow-xl">
-        <h1 className="text-white text-center">Liked Images</h1>
-        <LikedImages images={likedImages} />
+      <div className="bg-slate-700 z-10 w-1/3 shadow-xl overflow-y-scroll px-3">
+        <h1 className="p-3 text-3xl text-white font-bold">Liked Images</h1>
+        <LikedImages
+          onClick={viewDescription}
+          onUnlikeImage={unlikeImage}
+          images={likedImages}
+        />
       </div>
       <div className="h-full w-full bg-slate-800">
+        <div className="w-full text-center p-3">
+          <h1 className="text-2xl text-white font-normal">
+            SpaceTinder &#128640;
+          </h1>
+        </div>
         <div className="h-full w-full flex justify-center items-center">
           <div className="w-full">
             <div
@@ -116,50 +154,49 @@ export default function Home({ images }: HomeProps) {
                         key={imageData.title}
                         drag={idx === imageQueue.length - 1}
                         onDragEnd={handleOnDragEnd}
-                        onVote={vote}
+                        onVote={handleVote}
                       >
                         <Card
                           title={imageData.title}
                           date={imageData.date}
                           url={imageData.url}
+                          onInfoClick={() => viewDescription(imageData)}
                         />
                       </Draggable>
                     );
                   })
+                ) : loading ? (
+                  <div>
+                    <div>
+                      <Image
+                        src="/loading.svg"
+                        width={32}
+                        height={32}
+                        alt="loading"
+                      />
+                    </div>
+                  </div>
                 ) : (
-                  <div>Finding more images</div>
+                  <div>Could not find any images</div>
                 )}
               </AnimatePresence>
             </div>
             <div className="flex w-full pt-6 justify-center relative">
-              <div className="pr-1.5">
+              <div className="pr-3">
                 <CircularButton
-                  onPress={() => {
-                    elementsRef.current[
-                      imageQueue.length - 1
-                    ].current.swipeLeft();
+                  disabled={loading}
+                  onClick={() => {
+                    swipeTopCard(-1);
                   }}
                 >
                   <Image src="/skip.svg" alt="like" height={32} width={32} />
                 </CircularButton>
               </div>
-              <div className="px-1.5">
+              <div className="pl-3">
                 <CircularButton
-                  onPress={() => {
-                    elementsRef.current[
-                      imageQueue.length - 1
-                    ].current.swipeLeft();
-                  }}
-                >
-                  <Image src="/undo.svg" alt="like" height={32} width={32} />
-                </CircularButton>
-              </div>
-              <div className="pl-1.5">
-                <CircularButton
-                  onPress={() => {
-                    elementsRef.current[
-                      imageQueue.length - 1
-                    ].current.swipeRight();
+                  disabled={loading}
+                  onClick={() => {
+                    swipeTopCard(1);
                   }}
                 >
                   <Image src="/heart.svg" alt="like" height={32} width={32} />
@@ -169,6 +206,10 @@ export default function Home({ images }: HomeProps) {
           </div>
         </div>
       </div>
+      <Modal onClose={() => setShowModal(false)} show={showModal}>
+        <div onClick={() => setShowModal(false)}>close</div>
+        <ImageInfo image={testData.at(-1)} />
+      </Modal>
     </div>
   );
 }
