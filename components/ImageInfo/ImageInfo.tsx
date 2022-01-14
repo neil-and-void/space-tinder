@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 interface ImageInfoProps {
   image: APODImage;
@@ -7,65 +8,27 @@ interface ImageInfoProps {
 
 const ImageInfo = ({ image }: ImageInfoProps) => {
   return (
-    <div className="w-1/5 w-9/12">
-      <div className="relative">
-        <Image
-          className="rounded-t-xl"
-          src={image.url}
-          alt={image.title}
-          layout="responsive"
-          height={100}
-          width={150}
-        />
+    <motion.div
+      initial={{ y: 1000 }}
+      animate={{ y: 0 }}
+      transition={{ ease: 'anticipate', duration: 0.75 }}
+      className="w-1/3 h-4/5 relative flex flex-col"
+    >
+      <Image
+        className="rounded-t-xl"
+        src={image.url}
+        alt={image.title}
+        layout="responsive"
+        objectFit="cover"
+        height={300}
+        width={400}
+      />
+      <div className="bg-white p-3 rounded-b-xl shadow-lg grow">
+        <div className="text-lg font-semibold">{image.title}</div>
+        <div className="text-neutral-600">{image.date}</div>
+        <div className="pt-3">{image.explanation}</div>
       </div>
-      <div className="h-full bg-white p-3 rounded-b-xl shadow-lg overflow-y-scroll">
-        <div>{image.title}</div>
-        <div>{image.date}</div>
-        <div>
-          You can also use variant modifiers to target media queries like
-          responsive breakpoints, dark mode, prefers-reduced-motion, and more.
-          For example, use md:w-full to apply the w-full utility at only medium
-          screen sizes and above.You can also use variant modifiers to target
-          media queries like responsive breakpoints, dark mode,
-          prefers-reduced-motion, and more. For example, use md:w-full to apply
-          the w-full utility at only medium screen sizes and above.You can also
-          use variant modifiers to target media queries like responsive
-          breakpoints, dark mode, prefers-reduced-motion, and more. For example,
-          use md:w-full to apply the w-full utility at only medium screen sizes
-          and above.You can also use variant modifiers to target media queries
-          like responsive breakpoints, dark mode, prefers-reduced-motion, and
-          more. For example, use md:w-full to apply the w-full utility at only
-          medium screen sizes and above.You can also use variant modifiers to
-          target media queries like responsive breakpoints, dark mode,
-          prefers-reduced-motion, and more. For example, use md:w-full to apply
-          the w-full utility at only medium screen sizes and above.You can also
-          use variant modifiers to target media queries like responsive
-          breakpoints, dark mode, prefers-reduced-motion, and more. For example,
-          use md:w-full to apply the w-full utility at only medium screen sizes
-          and above.You can also use variant modifiers to target media queries
-          like responsive breakpoints, dark mode, prefers-reduced-motion, and
-          more. For example, use md:w-full to apply the w-full utility at only
-          medium screen sizes and above.You can also use variant modifiers to
-          target media queries like responsive breakpoints, dark mode,
-          prefers-reduced-motion, and more. For example, use md:w-full to apply
-          the w-full utility at only medium screen sizes and above.You can also
-          use variant modifiers to target media queries like responsive
-          breakpoints, dark mode, prefers-reduced-motion, and more. For example,
-          use md:w-full to apply the w-full utility at only medium screen sizes
-          and above.You can also use variant modifiers to target media queries
-          like responsive breakpoints, dark mode, prefers-reduced-motion, and
-          more. For example, use md:w-full to apply the w-full utility at only
-          medium screen sizes and above.You can also use variant modifiers to
-          target media queries like responsive breakpoints, dark mode,
-          prefers-reduced-motion, and more. For example, use md:w-full to apply
-          the w-full utility at only medium screen sizes and above.You can also
-          use variant modifiers to target media queries like responsive
-          breakpoints, dark mode, prefers-reduced-motion, and more. For example,
-          use md:w-full to apply the w-full utility at only medium screen sizes
-          and above.
-        </div>
-      </div>
-    </div>
+    </motion.div>
   );
 };
 

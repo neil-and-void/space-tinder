@@ -1,4 +1,4 @@
-import axios from 'axios';
+import Head from 'next/head';
 import { useState, useRef, useEffect, useCallback, createRef } from 'react';
 
 import Card from '../components/Card';
@@ -75,6 +75,7 @@ const testData = [
 export default function Home({ images }: HomeProps) {
   const [imageQueue, setImageQueue] = useState<APODImage[]>(testData);
   const [likedImages, setLikedImages] = useState<APODImage[]>([]);
+  const [modalImage, setModalImage] = useState<APODImage | null>(null);
   const elementsRef = useRef(testData.map(() => createRef()));
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -119,14 +120,22 @@ export default function Home({ images }: HomeProps) {
   };
 
   const viewDescription = (image: APODImage) => {
+    setModalImage(image);
     setShowModal(true);
   };
 
-  const unlikeImage = () => {};
+  const unlikeImage = (idx: number) => {
+    const newLikedImages = [...likedImages];
+    newLikedImages.splice(idx, 1);
+    setLikedImages(newLikedImages);
+  };
 
   return (
     <div className="h-screen w-full flex overflow-hidden">
-      <div className="bg-slate-700 z-10 w-1/3 shadow-xl overflow-y-scroll px-3">
+      <Head>
+        <title>SpaceTinder &#128640;</title>
+      </Head>
+      <div className="h-full bg-slate-700 z-10 w-1/3 shadow-xl overflow-y-scroll px-3">
         <h1 className="p-3 text-3xl text-white font-bold">Liked Images</h1>
         <LikedImages
           onClick={viewDescription}
@@ -166,15 +175,13 @@ export default function Home({ images }: HomeProps) {
                     );
                   })
                 ) : loading ? (
-                  <div>
-                    <div>
-                      <Image
-                        src="/loading.svg"
-                        width={32}
-                        height={32}
-                        alt="loading"
-                      />
-                    </div>
+                  <div className="w-full flex justify-center">
+                    <Image
+                      src="/loading.svg"
+                      width={128}
+                      height={64}
+                      alt="loading"
+                    />
                   </div>
                 ) : (
                   <div>Could not find any images</div>
@@ -207,8 +214,7 @@ export default function Home({ images }: HomeProps) {
         </div>
       </div>
       <Modal onClose={() => setShowModal(false)} show={showModal}>
-        <div onClick={() => setShowModal(false)}>close</div>
-        <ImageInfo image={testData.at(-1)} />
+        <ImageInfo image={modalImage} />
       </Modal>
     </div>
   );
