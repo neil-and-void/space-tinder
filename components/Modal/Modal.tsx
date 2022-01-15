@@ -21,7 +21,7 @@ const Modal = ({ show, onClose, children }: ModalProps) => {
         if (event.target !== event.currentTarget) return;
         onClose();
       }}
-      className="modal absolute h-screen w-screen top-0 left-0 z-20 grid place-items-center"
+      className="modal-bg h-screen w-screen absolute top-0 left-0 z-20 grid place-items-center"
     >
       {children}
     </div>

@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { useState, useRef, useEffect, useCallback, createRef } from 'react';
+import { useState, useRef, useEffect, createRef } from 'react';
 
 import Card from '../components/Card';
 import styles from '../styles/Home.module.css';
@@ -73,18 +73,20 @@ const testData = [
 ];
 
 export default function Home({ images }: HomeProps) {
-  const [imageQueue, setImageQueue] = useState<APODImage[]>(testData);
+  const [imageQueue, setImageQueue] = useState<APODImage[]>(images);
   const [likedImages, setLikedImages] = useState<APODImage[]>([]);
   const [modalImage, setModalImage] = useState<APODImage | null>(null);
-  const elementsRef = useRef(testData.map(() => createRef()));
+  const elementsRef = useRef(imageQueue.map(() => createRef()));
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    // fetch more photos once image queue has been swiped through
     const getMorePhotosOfTheDay = async () => {
       if (imageQueue.length === 0) {
+        console.log(elementsRef);
         setLoading(true);
-        const photos = await getPhotosOfTheDay(5);
+        const photos = await getPhotosOfTheDay(10);
         setImageQueue(photos);
         setLoading(false);
       }
@@ -93,6 +95,10 @@ export default function Home({ images }: HomeProps) {
     getMorePhotosOfTheDay();
   }, [imageQueue]);
 
+  /**
+   * Vote on the image
+   * @param result the vote cast on the image
+   */
   const handleVote = (result) => {
     const newImageQueue = [...imageQueue];
     const popped = newImageQueue.pop();
@@ -102,7 +108,13 @@ export default function Home({ images }: HomeProps) {
     setImageQueue(newImageQueue);
   };
 
-  const handleOnDragEnd = (event, info) => {
+  /**
+   *
+   * @param event The drag event
+   * @param info metadata on the drag event
+   */
+  const handleOnDragEnd = (event: PointerEvent, info: object) => {
+    console.log(event);
     const velocity = info.velocity.x;
     const direction = 0 < velocity ? 1 : velocity < 0 ? -1 : undefined;
     if (direction && Math.abs(velocity) > 500) {
@@ -110,8 +122,13 @@ export default function Home({ images }: HomeProps) {
     }
   };
 
+  /**
+   *
+   * @param direction
+   */
   const swipeTopCard = (direction) => {
     const topCardRef = elementsRef.current[imageQueue.length - 1];
+    console.log(elementsRef, elementsRef.current.length, topCardRef);
     if (direction < 0) {
       topCardRef.current.swipeLeft();
     } else if (0 < direction) {
@@ -119,11 +136,19 @@ export default function Home({ images }: HomeProps) {
     }
   };
 
+  /**
+   * View image info on modal
+   * @param image image to view info on
+   */
   const viewDescription = (image: APODImage) => {
     setModalImage(image);
     setShowModal(true);
   };
 
+  /**
+   * unlike a liked image
+   * @param idx index of the photo to unlike
+   */
   const unlikeImage = (idx: number) => {
     const newLikedImages = [...likedImages];
     newLikedImages.splice(idx, 1);
@@ -143,16 +168,16 @@ export default function Home({ images }: HomeProps) {
           images={likedImages}
         />
       </div>
-      <div className="h-full w-full bg-slate-800">
+      <div className="h-full w-full bg-slate-800 flex flex-col justify-center">
         <div className="w-full text-center p-3">
           <h1 className="text-2xl text-white font-normal">
             SpaceTinder &#128640;
           </h1>
         </div>
-        <div className="h-full w-full flex justify-center items-center">
+        <div className="w-full grow flex justify-center items-center">
           <div className="w-full">
             <div
-              className={`w-full flex relative justify-center items-center ${styles.imageQueue}`}
+              className={`w-full h-full flex relative justify-center items-center ${styles.imageQueue}`}
             >
               <AnimatePresence>
                 {imageQueue.length ? (
@@ -220,8 +245,8 @@ export default function Home({ images }: HomeProps) {
   );
 }
 
-// export async function getServerSideProps() {
-//   const photos = await getPhotosOfTheDay(5);
+export async function getServerSideProps() {
+  const photos = await getPhotosOfTheDay(10);
 
-//   return { props: { images: photos } };
-// }
+  return { props: { images: photos } };
+}

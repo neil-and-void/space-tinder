@@ -2,3 +2,11 @@
   width: 320px;
   height: 448px;
 }
+
+.cardShadow {
+  background: linear-gradient(
+    360deg,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0) 20%
+  );
+}

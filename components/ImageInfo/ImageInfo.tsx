@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface ImageInfoProps {
   image: APODImage;
@@ -12,7 +12,7 @@ const ImageInfo = ({ image }: ImageInfoProps) => {
       initial={{ y: 1000 }}
       animate={{ y: 0 }}
       transition={{ ease: 'anticipate', duration: 0.75 }}
-      className="w-1/3 h-4/5 relative flex flex-col"
+      className=" w-2/3 xl:w-1/3 h-4/5 relative flex flex-col"
     >
       <Image
         className="rounded-t-xl"

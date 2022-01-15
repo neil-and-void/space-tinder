@@ -11,7 +11,7 @@ interface LikedImagesProps {
 const LikedImages = ({ images, onClick, onUnlikeImage }: LikedImagesProps) => {
   if (images.length > 0) {
     return (
-      <div className="grid grid-cols-2 gap-4 p-4 overflow-none">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 p-4 overflow-none">
         {images.map((image, idx) => (
           <div key={idx}>
             <div className="relative">
@@ -25,8 +25,8 @@ const LikedImages = ({ images, onClick, onUnlikeImage }: LikedImagesProps) => {
                   className="rounded-xl select-none	absolute"
                   src={image.url}
                   alt={image.title}
-                  // width={320}
-                  // height={448}
+                  width={320}
+                  height={448}
                   layout="fill"
                   objectFit="cover"
                   placeholder="blur"

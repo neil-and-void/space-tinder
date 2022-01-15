@@ -25,13 +25,15 @@ const Card = ({ url, title, date, onInfoClick, ...props }: CardProps) => {
         placeholder="blur"
         blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNksAUAAEMAP+W2QeMAAAAASUVORK5CYII="
       />
-      <div className="h-full w-full relative flex ">
+      <div
+        className={`h-full w-full relative flex rounded-xl ${styles.cardShadow}`}
+      >
         <div className="absolute w-full bottom-0	p-3 text-white flex flex-row items-center">
           <div className="grow">
             <h1 className="font-semibold text-lg">{title}</h1>
             <div className="font-extralight">{date}</div>
           </div>
-          <div className="">
+          <div>
             <Image
               onClick={onInfoClick}
               src="/info.svg"
