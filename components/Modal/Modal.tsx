@@ -1,6 +1,5 @@
 import { useState, useEffect, ReactNode } from 'react';
 import ReactDOM from 'react-dom';
-import styles from './Modal.styles.css';
 
 interface ModalProps {
   onClose: () => void;
@@ -30,7 +29,7 @@ const Modal = ({ show, onClose, children }: ModalProps) => {
   if (isBrowser) {
     return ReactDOM.createPortal(
       modalContent,
-      document.getElementById('modal')
+      document.getElementById('modal') as HTMLElement
     );
   } else {
     return null;

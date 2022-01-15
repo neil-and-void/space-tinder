@@ -4,4 +4,7 @@ module.exports = {
   images: {
     domains: ['apod.nasa.gov', 'www.youtube.com'],
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };

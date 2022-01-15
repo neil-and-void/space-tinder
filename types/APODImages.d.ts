@@ -4,4 +4,5 @@ interface APODImage {
   explanation: string;
   url: string;
   hdurl?: string;
+  media_type: string;
 }

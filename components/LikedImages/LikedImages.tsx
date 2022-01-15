@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import Card from '../Card';
+import styles from './LikedImages.module.css';
 
 interface LikedImagesProps {
   images: APODImage[];
@@ -15,18 +15,15 @@ const LikedImages = ({ images, onClick, onUnlikeImage }: LikedImagesProps) => {
         {images.map((image, idx) => (
           <div key={idx}>
             <div className="relative">
-              <div style={{ aspectRatio: '4/5' }} className="w-full">
+              <div className={`w-full ${styles.likedImage}`}>
                 <Image
                   onClick={(event) => {
-                    console.log(event.target, event.currentTarget);
                     if (event.target !== event.currentTarget) return;
                     onClick(image);
                   }}
                   className="rounded-xl select-none	absolute"
                   src={image.url}
                   alt={image.title}
-                  width={320}
-                  height={448}
                   layout="fill"
                   objectFit="cover"
                   placeholder="blur"

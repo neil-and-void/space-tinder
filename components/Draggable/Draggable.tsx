@@ -4,22 +4,28 @@ import {
   forwardRef,
   useImperativeHandle,
   useEffect,
+  ForwardRefRenderFunction,
 } from 'react';
 import {
   motion,
   useMotionValue,
   useTransform,
   useAnimation,
+  PanInfo,
 } from 'framer-motion';
 
 interface DraggableProps {
   children: ReactNode;
-  onVote: (number) => void;
-  onDragEnd: (event, info) => void;
+  onVote: (number: number) => void;
+  onDragEnd: (event: PointerEvent, info: PanInfo) => void;
 }
 
-const Draggable = (
-  { onVote, children, onDragEnd, ...props }: DraggableProps,
+interface DraggableHandle {
+  swipe: (direction: number) => void;
+}
+
+const Draggable: ForwardRefRenderFunction<DraggableHandle, DraggableProps> = (
+  { onVote, children, onDragEnd, ...props },
   ref
 ) => {
   const x = useMotionValue(0);
@@ -45,15 +51,7 @@ const Draggable = (
 
   // allow parent to call swipe functions to not couple other components
   useImperativeHandle(ref, () => ({
-    swipeLeft: () => {
-      setDirection(-1);
-      onVote(-1);
-    },
-    swipeRight: () => {
-      setDirection(1);
-      onVote(1);
-    },
-    swipe: (direction) => {
+    swipe: (direction: number) => {
       setDirection(direction);
       onVote(direction);
     },

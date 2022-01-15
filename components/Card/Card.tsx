@@ -12,8 +12,6 @@ interface CardProps {
 }
 
 const Card = ({ url, title, date, onInfoClick, ...props }: CardProps) => {
-  const openModal = () => {};
-
   return (
     <div className={`relative ${styles.card}`}>
       <Image

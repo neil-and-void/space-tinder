@@ -23,7 +23,7 @@ const ImageInfo = ({ image }: ImageInfoProps) => {
         height={300}
         width={400}
       />
-      <div className="bg-white p-3 rounded-b-xl shadow-lg grow">
+      <div className="bg-white p-3 rounded-b-xl shadow-lg grow overflow-y-scroll">
         <div className="text-lg font-semibold">{image.title}</div>
         <div className="text-neutral-600">{image.date}</div>
         <div className="pt-3">{image.explanation}</div>
