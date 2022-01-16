@@ -1,0 +1,10 @@
+.imageInfo {
+  max-height: 90vh;
+  height: 90vh;
+}
+
+.imageDescription {
+  overflow-y: scroll;
+  max-height: 50%;
+  height: 50%;
+}

@@ -13,7 +13,9 @@ interface CardProps {
 
 const Card = ({ url, title, date, onInfoClick, ...props }: CardProps) => {
   return (
-    <div className={`relative ${styles.card}`}>
+    <div
+      className={`relative ${styles.card} hover:cursor-grab active:cursor-grabbing`}
+    >
       <Image
         className="rounded-xl select-none"
         alt={title}
@@ -33,6 +35,7 @@ const Card = ({ url, title, date, onInfoClick, ...props }: CardProps) => {
           </div>
           <div>
             <Image
+              className="cursor-pointer"
               onClick={onInfoClick}
               src="/info.svg"
               alt="like"

@@ -177,7 +177,12 @@ export default function Home({ images }: HomeProps) {
         </div>
       </div>
       <Modal onClose={() => setShowModal(false)} show={showModal}>
-        <ImageInfo image={modalImage} />
+        <ImageInfo
+          image={modalImage}
+          onClose={() => {
+            setShowModal(false);
+          }}
+        />
       </Modal>
     </div>
   );

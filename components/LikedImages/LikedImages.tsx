@@ -21,7 +21,7 @@ const LikedImages = ({ images, onClick, onUnlikeImage }: LikedImagesProps) => {
                     if (event.target !== event.currentTarget) return;
                     onClick(image);
                   }}
-                  className="rounded-xl select-none	absolute"
+                  className="rounded-xl select-none	absolute cursor-pointer"
                   src={image.url}
                   alt={image.title}
                   layout="fill"
