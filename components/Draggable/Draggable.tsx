@@ -30,9 +30,12 @@ const Draggable: ForwardRefRenderFunction<DraggableHandle, DraggableProps> = (
 ) => {
   const x = useMotionValue(0);
   const controls = useAnimation();
-  const xRange = [-1000, -1, 1, 1000];
+  const xRotateRange = [-1000, -1, 1, 1000];
   const rotateRange = [-45, 0, 0, 45];
-  const rotate = useTransform(x, xRange, rotateRange);
+  const rotate = useTransform(x, xRotateRange, rotateRange);
+  const xOpacityRange = [-750, -1, 1, 750];
+  const opacityRange = [1, 0, 0, 1];
+  const opacity = useTransform(x, xOpacityRange, opacityRange);
   const [direction, setDirection] = useState(0);
 
   useEffect(() => {
@@ -57,6 +60,8 @@ const Draggable: ForwardRefRenderFunction<DraggableHandle, DraggableProps> = (
     },
   }));
 
+  console.log(direction);
+
   return (
     <motion.div
       className={`bg-white shadow-md rounded-xl absolute`}
@@ -70,6 +75,19 @@ const Draggable: ForwardRefRenderFunction<DraggableHandle, DraggableProps> = (
       dragElastic={0.5}
       {...props}
     >
+      {direction !== 0 ? (
+        <motion.div
+          className={`h-full w-full rounded-xl ${
+            direction > 0 ? 'bg-emerald-500' : 'bg-rose-600'
+          } absolute z-20 grid place-items-center`}
+          style={{ opacity }}
+        >
+          <div className="font-semibold text-3xl text-white">
+            {direction > 0 ? 'LIKE' : 'NOPE'}
+          </div>
+        </motion.div>
+      ) : null}
+
       {children}
     </motion.div>
   );
