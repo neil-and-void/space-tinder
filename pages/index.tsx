@@ -52,7 +52,7 @@ export default function Home({ images }: HomeProps) {
   };
 
   /**
-   *
+   * callback handler for drag end
    * @param event The drag event
    * @param info metadata on the drag event
    */
@@ -66,6 +66,7 @@ export default function Home({ images }: HomeProps) {
 
   /**
    * programmatically swipe card
+   * @param direction
    */
   const swipeTopCard = (direction: number) => {
     const topCardRef = elementsRef.current[imageQueue.length - 1];

@@ -26,14 +26,14 @@ const Modal = ({ show, onClose, children }: ModalProps) => {
     </div>
   ) : null;
 
+  // prevent rendering on server
   if (isBrowser) {
     return ReactDOM.createPortal(
       modalContent,
       document.getElementById('modal') as HTMLElement
     );
-  } else {
-    return null;
   }
+  return null;
 };
 
 export default Modal;

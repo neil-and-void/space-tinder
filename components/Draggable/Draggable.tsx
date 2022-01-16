@@ -60,8 +60,6 @@ const Draggable: ForwardRefRenderFunction<DraggableHandle, DraggableProps> = (
     },
   }));
 
-  console.log(direction);
-
   return (
     <motion.div
       className={`bg-white shadow-md rounded-xl absolute`}
