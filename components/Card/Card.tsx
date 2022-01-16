@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import React from 'react';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 import styles from './Card.module.css';
 

@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { useState, useRef, useEffect, createRef, ElementRef } from 'react';
+import { useState, useRef, useEffect, createRef } from 'react';
 
 import Card from '../components/Card';
 import styles from '../styles/Home.module.css';
@@ -83,7 +83,6 @@ export default function Home({ images }: HomeProps) {
   };
 
   /**
-   * unlike a liked image
    * @param idx index of the photo to unlike
    */
   const unlikeImage = (idx: number) => {

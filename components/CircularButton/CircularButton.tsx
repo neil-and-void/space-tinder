@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface CircularButtonProps {
   onClick: () => void;
   children: React.ReactNode;
